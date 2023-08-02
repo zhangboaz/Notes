@@ -1,0 +1,7 @@
+.box {
+  background-color: #fff;
+  width: 200px;
+}
+.box .box1 {
+  background-color: #fff;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <!-- link:favicon -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" media="逻辑符 媒体类型 and (媒体特性)" href="xx.css">
+</head>
+<style>
+    body{
+        height: 2000px;
+        /* overflow: hidden; */
+    }
+    .box{
+        display: none;
+        margin:auto;
+        height: 500px;
+        width: 500px;
+        background-color: #ff0000;
+        
+    }
+    
+</style>
+
+<body>
+    <div class="box">
+        
+    </div>
+    <script>
+        const div = document.querySelector('.box')
+        window.addEventListener('scroll', function(){
+            const n = document.documentElement.scrollTop
+            if(n >= 100){
+                div.style.display = 'block'
+            } else{
+                div.style.display = 'none'
+            }
+        })
+    </script>
+</body>
+
+</html>
