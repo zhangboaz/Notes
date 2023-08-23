@@ -1,0 +1,1 @@
+export const checkphone = check => check.length === 6

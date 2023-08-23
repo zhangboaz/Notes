@@ -1,4 +1,4 @@
-## 作用域
+## 1. 作用域
 ### 局部作用域
 1. 函数作用域
     函数内部声明的变量只能在函数内部被访问，外部无法直接访问
@@ -175,11 +175,341 @@ console.log(c) // 3
 2. 对象属性的值将被赋值给与属性名相同的变量
 3. 注意解构的变量名不要和外面的变量名冲突否则报错
 4. 对象中找不到与变量名一致的属性是变量值为`underfined`
-## 遍历数组forEach方法（重点）
-遍历数组的每个元素
-#### 语法
+
+## 深入对象
+### 创建对象的三种方式
+#### 1. 利用对象字面量创建对象
 ```javascript
-被遍历的数组.forEach(function (当前数组元素, 当前元素索引号){
-    // 函数体
-})
+const obj = {
+  name: 'boaz'
+}
 ```
+#### 2. 利用`new Object`创建对象
+```javascript
+const obj = new Object({ name: 'boaz'})
+console.log(obj) // {name: 'boaz'}
+```
+#### 3. 利用构造函数创建对象
+构造函数：是一种特殊的函数，主要用来初始化对象
+```javascript
+// 构造函数
+function Obj(name, age, gender){
+    this.name = name
+    this.age = age
+    this.gender = gender
+}
+// 创建对象
+const Boaz = new Obj('boaz', 18, '男')
+```
+* 使用new关键字调用函数的行为被称为实例化
+* 实例化构造函数时没有参数时可以省略()
+* 构造函数内部无需写return，返回值即为新创建的对象
+* 构造函数内部的return返回的值无效，所以不要写return
+* new Object() new Date() 也是实例化构造函数
+##### 实例化执行过程
+1. 创建新对象
+2. 构造函数this指向新对象
+3. 执行构造函数代码，修改this，添加新属性
+4. 返回新对象
+##### 实例成员
+通过构造函数创建的对象称为实例对象，实例对象中的属性和方法称为实例成员（实例属性和实例方法）
+* 为构造函数传入参数，创建结构相同但值不同的对象
+* 构造函数创建的实例对象彼此独立互不影响
+##### 静态成员
+构造函数的属性和方法被称为静态成员（静态属性和静态方法）
+* 静态成员只能构造函数来访问
+* 静态方法中的this指向构造函数
+* 静态成员写在构造函数外面
+### 内置构造函数
+在JavaScript中最主要的数据类型有六种
+* 基本数据类型
+  * 字符串
+  * 数值
+  * 布尔
+  * undefined
+  * null
+* 引用类型
+  * 对象
+字符串、数值、布尔、等基本类型都有专门的构造函数，这些我们称为包装类型
+#### Object
+Object是内置的构造函数，用于创建普通对象
+```javascript
+// 通过构造函数创建普通对象
+const user = new Object({name: 'boaz', age: 18})
+```
+##### 常用的三个静态方法
+静态方法就是只有构造函数Object可以调用的
+1. Object.keys静态方法获取对象中所有属性（键）
+   ```javascript
+   const arr = Object.keys(obj)
+   ```
+   返回一个数组
+2. Object.values静态方法获取对象中所有属性值
+   ```javascript
+   const arr = Object.values(obj)
+   ```
+   返回一个数组
+3. Object.assign静态方法常用于对象拷贝
+   ```javascript
+   Object.assign(新对象, 旧对象)
+   ```
+   可以为对象添加属性
+#### Array
+Array是内置的构造函数，用于创建数组
+```javascript
+const arr = new Array(3, 5)
+```
+创建数组建议使用字面量创建，不用Array构造函数创建
+##### 1. forEach 遍历数组
+不返回数组，经常用于查找遍历数组元素
+##### 2. filter 过滤数组
+返回新数组，返回的是筛选满足条件的数组元素
+##### 3. map 迭代数组
+返回新数组，返回的是处理之后的数组元素
+##### 4. reduce 累计器
+返回累计处理的结果，经常用于求和
+```javascript
+arr.reduce(function(上一次值, 当前值){
+  // 函数体
+}, 初始值)
+arr.reduce((prev, current) => prev +current) // 数组求和
+```
+1. 如果没有起始值，则上一次值以数组的第一个元素为准
+2. 每一次循环，把返回值作为下一次循环的上一次值
+3. 如果有起始值，则起始值作为上一次值
+##### 5. join
+将数组元素拼接成字符串，返回字符串
+##### 6. find
+查找元素，返回符合测试条件的第一个数组元素值，如果没有符合条件的则返回undefined
+##### 7. every
+检测数组所有元素是否都符合指定条件，如果所有元素都通过检测返回true，否则返回false
+##### 8. some
+检测数组中的元素是否满足指定条件，如果数组中有元素满足条件返回true，否则返回false
+##### 9. concat
+合并两个数组，返回生成新数组
+##### 10. sort
+对原数组单元值排序
+##### 11. splice
+删除或替换原数组单元
+##### 12. reverse
+反转数组
+##### 13. findIndex
+查找元素索引值
+#### String
+##### 1. lenght
+用来获取字符串的长度
+##### 2. split
+用来将字符串拆分成数组
+##### 3. substring
+用于字符串截取
+##### 4. startsWith
+检测是否以某字符开头
+##### 5. includes
+判断一个字符串是否包含在另一个字符串中，返回true或false
+##### 6. toUpperCase
+用于将字母转成大写
+##### 7. toLowerCase
+用于将字母转成小写
+##### 8. indexOf
+检测是否包含某字符
+##### 9. endsWith
+检测是否以某字符结尾
+##### 10. replace
+用于替换字符串，支持正则匹配
+##### 11. match 
+用于查找字符串，支持正则匹配
+#### Number
+##### toFixed
+设置保留小数位的长度
+## 深入面向对象
+### 编程思想
+#### 面向过程编程
+就是分析出解决问题所需要的步骤，然后用函数把这些步骤一步一步实现，使用的时候再一个一个的依次调用就可以了
+#### 面向对象编程 OOP
+把事物分解成一个个对象，然后由对象之间分工和合作
+面向对象的特性：
+* 封装性
+* 继承性
+* 多态性
+### 构造函数
+1. 构造函数体现了面向对象的封装特性
+2. 构造函数实例创建的对象彼此独立，互不影响
+3. 构造函数存在浪费内存的问题
+### 原型
+* 构造函数通过原型分配的函数是所有对象所共享的
+* JavaScript规定，每一个构造函数都有一个prototype属性，指向另一个对象，所以我们也称为原型对象
+* 这个对象可以挂载函数，对象实例化不会多次创建原型上的函数，节约内存
+* 我们把不变的方法，直接定义在prototype对象上，这样所有对象的实例就可以共享这些方法
+* 构造函数和原型对象中的this都指向实例化的对象
+#### constructor 属性
+每个原型对象里面都有个constructor属性（constructor构造函数），该属性指向该原型对象的构造函数
+应用场景：如果原型对象内容被覆盖，可以添加constructor属性指回原来的构造函数
+#### 对象原型
+对象都会有一个属性__proto__指向构造函数的prototype原型对象，之所以我们对象可以使用构造函数prototype原型对象的属性和方法，就是因为对象有__proto__原型的存在
+* `__proto__`是JS非标准属性
+* `[[prototype]]`和`__proto__`意义相同
+* 用来表明当前实例对象指向哪个原型对象`prototype`
+* `__proto__`对象原型里面也有一个`constructor`属性，指向创建该实例对象的构造函数 
+#### 原型继承
+```javascript
+// 封装 共同属性
+function People() {
+    head: 1
+    eyes: 2
+}
+// 构造函数 Woman 继承People
+function Woman(){
+}
+// 通过原型来继承
+Woman.prototype = new People()
+// 指回原来的构造函数
+Woman.prototype.constructor = Woman
+// 给Woman添加一个方法
+Woman.prototype.baby = () => true
+// 构造函数 Man 继承People
+function Man(){
+}
+Man.prototype = new People()
+Man.prototype.constructor = Man
+Man.prototype.baby = () => false
+```
+#### 原型链
+基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对象的链状结构关系称为原型链
+##### 查找规则
+1. 当访问一个对象的属性（包括方法）时，首先查找这个对象自生有没有该属性
+2. 如果没有就查找它的原型（也就是`__proto__`指向的`prototype`原型对象）
+3. 如果还没有就查找原型对象的原型（`Object`的原型对象）
+4. 依次类推一直找到`Object`为止（null）
+5. `__proto__`对象原型的意义就在于为对象成员查找机制提供了一个方向，或者说一条路线
+6. 可以使用`instanceof`运算符用于检测构造函数的`prototype`属性是否出现在某个实例对象的原型链上
+## 深浅拷贝
+深浅拷贝只针对引用类型
+### 浅拷贝
+拷贝的是第一层地址，深一层的引用类型无法实现拷贝
+1. 拷贝对象：`Object.assgin()`或展开运算符`{...obj}`拷贝对象
+2. 拷贝数组：`Array.prototype.concat()`或`[...arr]`
+### 深拷贝
+拷贝的是对象
+1. 通过递归实现深拷贝
+2. lodash（JS工具库）里面的cloneDeep方法
+3. 通过JSON.stringify()转换为JSON字符转，再使用JSON.parse()转换为对象
+## 异常处理
+### throw抛异常
+1. throw抛出异常信息，程序也会终止执行
+2. throw后面跟的是错误提示信息
+3. Error对象配合throw使用，能够设置更详细的错误信息
+### try/catch捕获异常
+```javascript
+try {
+    // 可能出现错误的代码
+} catch (error) {
+    // 出现错误执行catch
+    // 查看错误信息 error.message
+}
+finally {
+    // 不论代码对错，都执行
+}
+```
+1. `try...catch`用于捕获错误信息
+2. 将预估可能发生错误的代码写在`try`代码段里
+3. 如果`try`代码段中出现错误后，会执行`catch`代码段，并截获到错误信息
+4. `finally`不管是否有错误，都会执行
+### debugger
+在代码中打断点，在调试时能更快的找到断点
+## 处理this
+### this指向
+普通函数
+* 普通函数的调用方式决定了`this`的值，即【谁调用`this`指向谁】
+* 普通函数没有明确调用者时`this`指向`window`，严格模式下没有调用者时`this`的值为`undefined`
+* 严格模式
+  ```javascript
+  'use strict'
+  ```
+箭头函数
+* 不受调用方式的影响，事实上箭头函数中并不存在`this`
+* 箭头函数会默认帮我们绑定外层`this`的值，所以箭头函数中`this`的值和外层的`this`是一样的
+* 箭头函数中的`this`引用的是最近作用域中的`this`
+* 向外层作用域中，一层一层查找`this`，直到有`this`的定义
+### 改变this
+#### call()
+使用call方法调用函数，同时指定被调用函数中this的值
+##### 语法
+```javascript
+fun.call(thisArg, arg1, arg2, ...)
+```
+* `thisArg`：在fun函数运行时指定的this值
+* `arg1, arg2, ...`：传递的其他参数
+* 返回值就是函数的返回值，因为它就是调用函数
+#### apply()
+使用apply方法调用函数，同时指定被调用函数中this的值
+##### 语法
+```javascript
+fun.apply(thisArg, [argsArray])
+```
+* `thisArg`：在fun函数运行时指定的`this`值
+* `argsArray`：传递的值，必须包含在数组里面
+* 返回值就是函数的返回值，因为它是调用函数
+* 因此`apply`主要跟数组有关系，比如使用`Math.max()`求数组的最大值
+#### bind()
+`bind()`方法不会调用函数，但是能改变函数内部`this`指向
+##### 语法
+```javascript
+fun.bind(thisArg, arg1, arg2, ...)
+```
+* `thisArg`：在fun函数运行时指定的`this`值
+* `arg1, arg2, ...`：传递的其他参数
+* 返回由指定的`this`值和初始化参数改造的原函数拷贝（新函数）
+* 因此当我们只是想改变`this`指向，并且不想调用这个函数的时候，可以使用`bind`，比如定时器内部的`this`指向
+## 防抖 debounce
+单位时间内，频繁触发事件，只执行最后一次
+### 使用场景
+* 搜索框搜索输入，只需用户最后一次输入完，再发送请求
+* 手机号、邮箱验证输入检测
+### 实现
+#### 1. lodash提供的防抖来处理
+#### 2. 手写一个防抖函数
+防抖的核心就是利用定时器（setTimeout）来实现
+1. 声明一个定时器函数
+2. 当函数每次滑动都先判断是否有定时器了，如果有定时器先清除以前的定时器
+3. 如果没有定时器则开启定时器，记得存到变量里面
+4. 在定时器里面调用要执行的函数
+```javascript
+function debounce(fn, time) {
+    let timer
+    return () => {
+        if (timer) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+            fn()
+        }, time)
+    }
+}
+```
+## 节流 throttle
+单位时间内，频繁触发事件，只执行一次
+### 使用场景
+* 高频事件：鼠标移动`mousemove`、页面尺寸缩放`resize`、滚动条滚动`scroll`等等
+### 实现
+#### 1. lodash提供的节流来处理
+#### 2. 手写一个节流函数
+节流的核心就是利用定时器`setTimeout`来实现
+1. 声明一个定时器变量
+2. 当鼠标每次滑动都先判断是否有定时器了，如果有定时器则不开启新定时器
+3. 如果没有定时器则开启定时器，记得存在变量里面
+   * 定时器里面调用执行的函数
+   * 定时器里面要把定时器清空
+```javascript
+function throttle(fn, time) {
+    let timer = null
+    return () => {
+        if (!timer) {
+            timer = setTimeout(() => {
+                fn()
+                timer = null
+            }, time)
+        }
+    }
+}
+```
+* 在定时器里面是无法删除定时器的，所以使用`timer = null` 

@@ -101,3 +101,107 @@ const {uname, pwd} = data //对象解构赋值
 * empty 设置是否获取空值
   * true 获取空值
   * false 不获取空值
+## 图片上传
+1. 获取图片文件对象
+2. 使用`FormData`携带图片文件
+   ```javascript
+   const fd = new FormData()
+   fd.append(参数名, 值)
+   ```
+3. 提交表单数据到服务器使用图片url网址
+## AJAX原理
+### XMLHttpRequest
+XMLHttpRequest（XHR）对象用于与服务器交互
+* `axios`内部采用`XMLHttpRequest`与服务器交互
+#### XMLHttpRequest使用
+1. 创建`XMLHttpRequest`对象
+2. 配置请求方法和请求url网址
+3. 监听`loadend`事件，接收响应结果
+4. 发起请求
+```javascript
+const xhr = new XMLHttpRequest()
+xhr.open('请求方法', '请求url网址')
+xhr.addEventListener('loadend', () => {
+    // 响应结果
+    console.log(xhr.response)
+})    
+xhr.send()
+```
+#### XMLHttpRequest 查询参数
+定义：浏览器提供给服务器的额外信息，让服务器返回浏览器想要的参数
+语法：http://xxxx.com/xxx/xxx?参数名1=值1&参数名2
+#### XMLHttpRequest 数据提交
+1. 请求头设置`Content-Type: application/json`
+2. 请求体携带JSON字符串
+```javascript
+const xhr = new XMLHttpRequest()
+xhr.open('请求方法', '请求url网址')
+xhr.addEventListener('loadend', () => {
+    // 响应结果
+    console.log(xhr.response)
+})  
+// 告诉服务器，我传递的内容类型，是JSON字符串
+xhr.setRequestHeader('Content-Type', 'applecation/json')
+// 准备数据并转为JSON字符串
+const user = {username:'boaz', password:'123456'}
+const userStr = JSON.stringify(user)
+xhr.send(userStr)  
+```
+## Promise
+`Promise`对象用于表示一个异步操作的最终完成（或失败）及其结果值
+**好处:**
+1. 逻辑更清晰
+2. 了解`axios`函数内部运行机制
+3. 能解决回调函数地狱问题
+```javascript
+// 1.创建Promise对象
+const p = new Promise((resolve, reject) => {
+    // 2.执行异步任务-并传递结果
+    // 成功调用：resole(值) 触发 then() 执行
+    // 失败调用：reject(值) 触发 catch() 执行
+})
+// 3.接收结果
+p.then(result => {
+    // 成功
+}).catch(error => {
+    //失败
+})
+```
+### 三种状态
+* 待定`pebding`：初始状态，既没有被兑现，也没有被拒绝
+* 已兑现`fulfilled`：意味着，操作成功完成
+* 已拒绝`rejected`：意味着，操作失败
+`Promise`对象一旦被兑现/拒绝就已经敲定了，状态无法再被改变
+## 同步异步代码
+### 同步代码
+逐步执行，需原地等待结果后，才继续向下执行
+### 异步代码
+调用后耗时，不阻塞代码继续执行（不必原地等待），在将来完成后触发一个回调函数
+## 回调函数地狱
+在回调函数中嵌套回调函数，一直嵌套下去就形成了回调函数地狱
+* 缺点：可读性差，异常无法捕获，耦合性严重，牵一发动全身
+## Promise-链式调用
+**概念**：依靠`then()`方法会返回一个新生成的`Promise`对象特性，继续串联下一环节任务，直到结束
+**细节**：`then()`回调函数中的返回值，会影响新生成的`Promise`对象最终状态和结果
+**好处**：通过链式调用，解决回调函数嵌套问题
+## 事件循环 EventLoop
+执行代码和收集异步任务，在调用栈空闲时，反复调用任务队列里回调函数执行机制
+* JS是单线程的，为了不阻塞JS引擎，设计执行代码的模型
+#### JS内部代码执行过程
+1. 执行同步代码，遇到异步代码交给宿主浏览器环境执行
+2. 异步有了结果后，把回调函数放入任务队列排队
+3. 当调用栈空闲后，反复调用任务队列里的回调函数
+## 宏任务与微任务
+宏任务：由浏览器环境执行的异步代码
+微任务：由JS引擎环境执行的异步代码
+## Promise.all 静态方法
+合并多个Promise对象，等待所有同时成功完成（或某一个失败），做后续处理
+## token
+#### 概念
+访问权限的令牌，本质上是一个字符串
+#### 创建
+正确登陆后，由后端签发并返回
+#### 作用
+判断是否有登录状态，控制访问权限等
+## axios请求拦截器
+发起请求之前，触发的配置函数，对请求参数进行额外配置

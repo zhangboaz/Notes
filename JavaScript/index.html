@@ -6,20 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-
+        div {
+            border: 1px solid #000;
+            height: 150px;
+            width: 300px;
+            margin: auto;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
+    <button class="del">删除</button>
+
     <script>
-        // 普通数组
-        const arr = [1, 2, 3]
-        // 批量声明变量 a b c
-        // 同时将数组单元值 1 2 3 依次赋值给变量 a b c
-        const [a, b, c] = arr
-        console.log(a) // 1 
-        console.log(b) // 2
-        console.log(c) // 3
+        function debounce(fn, time) {
+            let timer
+            return () => {
+                if (timer) {
+                    clearTimeout(timer)
+                }
+                timer = setTimeout(() => {
+                    fn()
+                }, time)
+            }
+        }
+        function throttle(fn, time) {
+            let timer = null
+            return () => {
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        fn()
+                        timer = null
+                    }, time)
+                }
+            }
+        }
     </script>
 </body>
 
