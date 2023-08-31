@@ -1,7 +1,7 @@
 ## 什么是Node.js
 Node.js是一个跨平台Javascript运行环境，使开发者可以搭建服务器端的Javascript应用程序
 * 浏览器能执行JS代码，依靠的是内核中的V8引擎（C++程序）
-* Node.js是基于CHrome V8引擎进行封装（运行环境）
+* Node.js是基于Chrome V8引擎进行封装（运行环境）
 * 都支持ECMAScript标准语法，Node.js有独立的API
 * Node.js环境没有DOM和BOM等
 ### 作用
