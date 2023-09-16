@@ -100,3 +100,30 @@ if(x is not y): # 用is not判断x和y是否引用同一个对象
 else:
     print("变量x与y具有相同的标识")
 ```
+## 基本输入输出方法
+### 数据输出
+1. `print()`函数
+   基本格式
+   ```python
+   print(123,'abc')
+   ```
+   格式化输出
+   ```python
+   print(格式控制字符串%(输出项1,输出项2,输出项n))
+   ```
+   >> 格式控制字符串：%[附加格式说明符]格式符
+2. `format()`函数
+   ```python
+    print("{} {}".format("hello","world")) 
+    # hello world
+    print("{1} {0} {1}".format("hello","world")) 
+    # hello world hello
+   ```
+### 数据输入
+`input([prompt])`函数
+`[prompt]`是可选的，表示用户输入时的提示信息
+```python
+name = input(请输入名字：)
+a, b = eval(input(请输入两个数，用,隔开))
+```
+## 列表
