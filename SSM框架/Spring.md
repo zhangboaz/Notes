@@ -342,3 +342,200 @@ IoC容器根据bean所依赖的资源在容器中自动查找并注入到bean中
    ```java
     UserService userService =app.getBean(UserService.class);
    ```
+## 8. 注解开发
+### 8-1. 注解开发bean
+* 使用`@Component`定义bean
+  ```java
+  @Component("userDao")
+  public class UserDaoImpl implements UserDao {
+    
+  }
+  ```
+* 核心配置文件中通过组件扫描加载bean
+  ```xml
+  <context:component-scan base-package="com.beyond"/>
+  ```
+#### Spring提供@Cmponent注释的三个衍生注释
+* `@Controller` 用于表现层bean定义
+* `@Service` 用于业务层bean定义
+* `@Repository` 用于数据层bean定义
+### 8-2. 纯注解开发
+* Java类代替Spring核心配置文件
+  ```java
+  @Configuration
+  @ComponentScan("com.beyond")
+  public class SpringConfig {
+  }
+  ```
+  * `@Configuration`注解用于设定当前类为配置类
+  * `@ComponentScan`注解用于设定扫描路径，此注解只能添加一次，多个数据请用数组格式
+    ```java
+    @ComponentScan({"com.beyond.dao", "com.beyond.service"})
+    ```
+* 读取Spring核心配置文件初始化容器对象切换为读取Java配置类初始化容器对象
+  ```java
+  // 加载配置文件初始化容器对象
+  ApplicationContext ctx = nClassPathXmlApplicationCont("applicationContext.xml");
+  // 取Java配置类初始化容器对象
+  ApplicationContext ctx = nAnnotationConfigApplicationCont(SpringConfig.class);
+  ```
+## 9. 注解开发作用范围和生命周期
+### 9-1. bean作用范围
+使用`@Scope`定义bean作用范围
+```java
+@Component("userDao")
+@Scope("singlecon")
+public class UserDaoImpl implements UserDao {
+}
+```
+### 9-2. bean生命周期
+
+## 10. 注解开发依赖注入
+### 自动装配
+* 使用`@Autowired`注解开启自动装配模式（按类型）
+  ```java
+  @Service
+  public class UserServiceImpl implements   UserService {
+      @Autowired
+      UserDao userDao;
+
+  //    public void setUserDao(UserDao userDao) {
+  //        this.userDao = userDao;
+  //    }
+
+      @Override
+      public void save() {
+          userDao.save();
+      }
+  }
+  ```
+  >> 注意
+  >> * 自动装配基于反射设计创建对象并暴力反射对应属性为私有属性初始化数据，因此无需提供setter方法
+  >> * 自动装配建议使用无参构造创建对象（默认），如果不提供对应构造方法，请提供唯一的构造方法
+* 使用`@Qualifier`注解开启指定名称装配bean
+  ```java
+  @Service("userService")
+  public class UserServiceImpl implements         UserService {
+    @Autowired
+    @Qualifier("userDao")
+    private UserDao userDao;
+  }
+  ```
+  >> 注意
+  >> `@Qualifier`注解无法单独使用，必须配合`@Autowired`注解使用
+* 使用`@Value`实现简单类型注入
+  ```java
+  @Component("userDao")
+  public class UserDaoImpl implements UserDao {
+
+      @Value("666")
+      private String sum;
+  }
+  ```
+* 使用`@PropertySource`注解加载properties文件
+  ```java
+  @Configuration
+  @ComponentScan("com.beyond")
+  @PropertySource("classpath:jdbc.properties")
+  public class SpringConfig {
+  }
+  ```
+  >> 注意
+  >> 路径仅支持单一文件配置，多文件请使用数组格式配置，不允许使用通配符*
+## 11. 第三方bean管理
+### 11-1. 第三方bean管理
+使用`@Bean`配置第三方bean
+  ```java
+  @Configuration
+  public class SpringConfig {
+      @Bean
+      public DataSource dataSource(){
+          DruidDataSource ds = new DruidDataSource();
+          ds.setDriverClassName("com.mysql.jdbc.Driver");
+          ds.setUrl("jdbc:mysql://localhost:3306/spring_db");
+          ds.setUsername("root");
+          ds.setPassword("root");
+          return ds;
+      }
+  }
+  ```
+* 使用独立的配置类管理第三方bean
+* 将独立的配置类加入核心配置
+* 方式一：导入式
+  ```java
+  public class JdbcConfig {
+      @Bean
+      public DataSource dataSource(){
+          DruidDataSource ds = new DruidDataSource();
+          ds.setDriverClassName("com.mysql.jdbc.Driver");
+          ds.setUrl("jdbc:mysql://localhost:3306/spring_db");
+          ds.setUsername("root");
+          ds.setPassword("root");
+          return ds;
+      }
+  }
+  ```
+  * 使用`@Import`注释手动加入配置类到核心配置，此注解只能添加一次，多个数据请用数组格式
+    ```java
+    @Configuration
+    @Import(JdbcConfig.class)
+    public class SpringConfig {
+    }
+    ```
+* 方式二：扫描式
+  ```java
+  @Configuration
+  public class JdbcConfig {
+      @Bean
+      public DataSource dataSource(){
+          DruidDataSource ds = new DruidDataSource();
+          ds.setDriverClassName("com.mysql.jdbc.Driver");
+          ds.setUrl("jdbc:mysql://localhost:3306/spring_db");
+          ds.setUsername("root");
+          ds.setPassword("root");
+          return ds;
+      }
+  }
+  ```
+  * 使用`@ComponentScan`注解扫描配置类所在的包，加载对应的配置类信息
+    ```java
+    @Configuration
+    @ComponentScan({"com.beyond.config","com.beyond.dao","com.beyond.service"})
+    public class SpringConfig {
+    }
+    ```
+### 11-2. 第三方bean依赖注入
+* 简单类型依赖注入
+  ```java
+  public class JdbcConfig {
+      @Value("com.mysql.jdbc.Driver")
+      private String driver;
+      @Value("jdbc:mysql://localhost:3306/spring_db")
+      private String url;
+      @Value("root")
+      private String username;
+      @Value("root")
+      private String password;
+      @Bean
+      public DataSource dataSource(){
+          DruidDataSource ds = new DruidDataSource();
+          ds.setDriverClassName(driver);
+          ds.setUrl(url);
+          ds.setUsername(username);
+          ds.setPassword(password);
+          return ds;
+      }
+  }
+  ```
+* 引用类型依赖注入
+  ```java
+    @Bean
+    public DataSource dataSource(UserService userService){
+        System.out.println(userService);
+        DruidDataSource ds = new DruidDataSource();
+        // 属性设置
+        return ds;
+    }
+  ```
+  * 引用类型注入只需要为bean定义方法设置形参即可，容器会根据类型自动装配对象
+## 12. Spring整合MyBatis
