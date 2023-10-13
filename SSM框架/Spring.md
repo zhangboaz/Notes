@@ -539,3 +539,42 @@ public class UserDaoImpl implements UserDao {
   ```
   * 引用类型注入只需要为bean定义方法设置形参即可，容器会根据类型自动装配对象
 ## 12. Spring整合MyBatis
+1. 导入`mybatis` `mybatis-spring` `spring-jdbc`
+2. 将配置文件装换成Java类
+    ```java
+    public class MybatisConfig {
+
+        @Bean
+        public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource){
+            SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
+            ssfb.setTypeAliasesPackage("com.beyond.domain");
+            ssfb.setDataSource(dataSource);
+            return ssfb;
+        }
+
+        @Bean
+        public MapperScannerConfigurer mapperScannerConfigurer(){
+            MapperScannerConfigurer msc = new MapperScannerConfigurer();
+            msc.setBasePackage("com.beyond.dao");
+            return msc;
+
+        }
+    }
+    ```
+## 13. Spring整合Junit
+1. 导入`junit` `spring-test`
+2. 使用Spring整合Junit专用的类加载器
+   ```java
+   @RunWith(SpringJUnit4ClassRunner.class)
+   @ContextConfiguration(classes = SpringConfig.class)
+   public class UserServiceTest {
+       @Autowired
+       private UserService userService;
+ 
+       @Test
+       public void testUserService(){
+           System.out.println(userService.selectall());
+       }
+   }    
+   ```
+## 
