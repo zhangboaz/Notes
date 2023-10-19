@@ -49,7 +49,9 @@ git branch 分支名
 git branch -v
 ```
 #### 切换分支
+```git
 git checkout 分支名
+```
 #### 把指定分支合并到当前分支上
 ```git
 git merge 分支名

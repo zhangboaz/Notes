@@ -577,4 +577,58 @@ public class UserDaoImpl implements UserDao {
        }
    }    
    ```
-## 
+## 14. Spring事务
+* 事务作用：在数据层保障一系列的数据库操作同成功同失败
+* Spring事务作用：在数据层或业务层保障一系列的数据库操作同成功同失败
+### 14-1. Spring事务实现
+1. 在业务接口上添加Spring事务管理
+   ```java
+    public interface UserService {
+    @Transactional
+    public List<User> selectall();
+    }
+   ```
+2. 设置事务管理器
+   ```java
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource){
+        DataSourceTransactionManager ptm = new DataSourceTransactionManager();
+        ptm.setDataSource(dataSource);
+        return ptm;
+    }
+   ```
+3. 开启注解式事务驱动
+   ```java
+    @Configuration
+    @ComponentScan("com.beyond")
+    @PropertySource("classpath:jdbc.properties")
+    @EnableTransactionManagement
+    @Import({JdbcConfig.class, MybatisConfig.class})
+    public class SpringConfig {
+    }
+   ```  
+### 14-2. 事务角色
+* 事务管理员：发起事务方，在Spring中通常指代业务层开启事务的方法
+* 事务协调员：加入事务方，在Spring中通常指代数据层方法，也就是业务层方法
+### 14-3. 事务相关配置
+* `reanOnly`
+  * 作用：设置是否为只读事务
+  * 示例：`readOnly=true` 只读事务
+* `timeout`
+  * 作用：设置事务超时时间
+  * 示例：`timeout = -1` 永不超时
+* `rollbackFor`
+  * 作用：设置事务回滚异常（class）
+  * 示例：`rollbackFor = {NullPointException.class}`
+* `rollbackForClassName`
+  * 作用：设置事务回滚异常（String）
+  * 示例：同上格式为字符串
+* `noRollbackFor`
+  * 作用：设置事务不回滚异常（class）
+  * 示例：`noRollbackFor = {NullPointException.class}`
+* `noRollbackForClassName`
+  * 作用：设置事务不回滚异常（String）
+  * 示例：同上格式为字符串
+* `propagation`
+  * 作用：设置事务传播行为
+  * 示例：`propagation = Propagation.REQUIRES` 默认
