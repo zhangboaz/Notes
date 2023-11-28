@@ -95,3 +95,185 @@ SpringBoot提供了多种属性配置方式（优先级从高到低）
   @Autowired
   private Enterprise enterprise;
   ```
+### 3-4. 多环境配置
+```yml
+# 设置启用的环境
+spring:
+  profiles:
+    active:  pro
+
+---
+# 开发
+spring:
+  config:
+    activate:
+      on-profile: dev
+server:
+  port: 80
+---
+# 生产
+spring:
+  config:
+    activate:
+      on-profile: pro
+server:
+  port: 81
+---
+# 测试
+spring:
+  config:
+    activate:
+      on-profile: test
+server:
+  port: 82
+```
+#### properties文件多环境启动
+* 主启动配置文件application.properties
+  ```properties
+  spring.profiles.active=pro
+  ```
+* 环境分类配置文件application-pro.properties
+  ```properties
+  server.port=80
+  ```
+* 环境分类配置文件application-dev.properties
+  ```properties
+  server.port=81
+  ```
+* 环境分类配置文件application-test.properties
+  ```properties
+  server.port=82
+  ```
+### 3-5. 多环境启动命令格式
+* 带参数启动SpringBoot
+  ```cmd
+  java -jar springboot.jar --spring.profiles.active=test
+  ```
+  ```cmd
+  java -jar springboot.jar --server.port=88
+  ```
+  ```cmd
+  java -jar springboot.jar --server.port=88 --spring.profiles.active=test
+  ```
+### 3-6. 多环境开发控制
+Maven与SpringBoot多环境兼容
+1. Maven中设置多环境属性
+   ```xml
+    <profiles>
+        <profile>
+            <id>dev_env</id>
+            <properties>
+                <profile.active>dev</profile.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>pro_env</id>
+            <properties>
+                <profile.active>pro</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>test_env</id>
+            <properties>
+                <profile.active>test</profile.active>
+            </properties>
+        </profile>
+    </profiles>
+   ```
+2. SpringBoot中引用Maven属性
+   ```yml
+    # 设置启用的环境
+    spring:
+      profiles:
+        active: ${profile.active}
+
+    ---
+    # 开发
+    spring:
+      config:
+        activate:
+          on-profile: dev
+    server:
+      port: 80
+    ---
+    # 生产
+    spring:
+      config:
+        activate:
+          on-profile: pro
+    server:
+      port: 81
+    ---
+    # 测试
+    spring:
+      config:
+        activate:
+          on-profile: test
+    server:
+      port: 82
+
+   ```
+4. 对资源文件开启对默认占位符的解析
+   ```xml
+   <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-resources-plugin</artifactId>
+       <version>3.3.1</version>
+       <configuration>
+           <encoding>UTF-8</encoding>
+           <useDefaultDelimiters>true</useDefaultDelimiters>
+       </configuration>
+   </plugin>
+   ```
+### 3-7. 配置文件分类
+* SpringBoot中4级配置文件
+  1. file:config/application.yml（最高）
+  2. file:application.yml
+  3. classpath:config/application.yml
+  4. classpath:application.yml（最低）
+* 作用：
+  * 1级与2级留作系统打包后设置通用属性
+  * 3级与4级用于系统开发阶段设置通用属性
+## 4. 整合第三方技术
+### 4-1. 整合Junit
+```java
+@SpringBootTest
+class Springboot04IntegrateApplicationTests {
+
+    @Autowired
+    private BookService bookService;
+
+    @Test
+    void contextLoads() {
+        bookService.save();
+    }
+
+}
+```
+### 4-2. 整合Mybatis
+1. 创建新模块，选择Spring初始化，并设置模块相关基础信息
+2. 选择当前模块需要使用的技术集（mybatis,mysql）
+3. 设置数据源参数
+   ```yml
+    spring:
+      datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/mybatis
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+   ```
+4. 定义数据层接口与映射配置
+   ```java
+    @Mapper
+    public interface BookDao {
+
+        @Select("select * from tb_book where id = #{id}")
+        public Book getById(Integer id);
+
+    }
+   ```
+### 4-3. SpringBoot的SSM整合
